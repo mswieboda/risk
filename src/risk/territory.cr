@@ -8,7 +8,9 @@ module Risk
     getter sprite : SF::Sprite
     getter sprite_outline : SF::Sprite
 
-    def initialize(name, x, y, width, height, color : SF::Color)
+    DefaultColor = SF::Color.new(96, 96, 96)
+
+    def initialize(name, x, y, width, height, color = DefaultColor)
       @name = name
       @x = x
       @y = y

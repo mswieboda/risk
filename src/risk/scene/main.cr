@@ -17,10 +17,10 @@ module Risk::Scene
 
       # south america
       territory_data = [
-        {name: "venezula", x: 0, y: 0, width: 160, height: 80, color: SF::Color::Red},
-        {name: "brazil", x: 2, y: 2, width: 208, height: 192, color: SF::Color::Green},
-        {name: "peru", x: 0, y: 3, width: 144, height: 160, color: SF::Color::Blue},
-        {name: "argentina", x: 0, y: 9, width: 144, height: 224, color: SF::Color::Yellow}
+        {name: "venezula", x: 0, y: 0, width: 160, height: 80},
+        {name: "brazil", x: 2, y: 2, width: 208, height: 192},
+        {name: "peru", x: 0, y: 3, width: 144, height: 160},
+        {name: "argentina", x: 0, y: 9, width: 144, height: 224}
       ]
 
       territory_data.each do |data|
@@ -29,8 +29,7 @@ module Risk::Scene
           x: x + data[:x] * cell,
           y: y + data[:y] * cell,
           width: data[:width],
-          height: data[:height],
-          color: data[:color]
+          height: data[:height]
         )
       end
 
