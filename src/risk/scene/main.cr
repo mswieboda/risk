@@ -1,15 +1,15 @@
-require "../player"
+require "../territory"
 require "../hud"
 
 module Risk::Scene
   class Main < GSF::Scene
     getter hud
-    getter player
 
     def initialize
       super(:main)
 
-      @player = Player.new(x: 300, y: 300)
+      @territory = Territory.new(name: "venezula", x: 300, y: 300, width: 160, height: 80, color: SF::Color::Green)
+
       @hud = HUD.new
     end
 
@@ -19,12 +19,11 @@ module Risk::Scene
         return
       end
 
-      player.update(frame_time, keys)
       hud.update(frame_time)
     end
 
     def draw(window)
-      player.draw(window)
+      @territory.draw(window)
       hud.draw(window)
     end
   end
