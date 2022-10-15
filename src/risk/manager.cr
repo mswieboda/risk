@@ -12,7 +12,9 @@ module Risk
     getter turn_phase : Symbol
 
     Phases = [:order, :allocate, :play]
-    TurnPhases = [:draft, :attack, :fortify]
+    TurnPhases = [:predraft, :draft, :attack, :fortify]
+    MinDraftUnits = 3
+    HeldTerritoriesRatio = 3
 
     def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
       @players = players
@@ -38,15 +40,27 @@ module Risk
         allocate_territories(mouse, mouse_coords)
       when :play
         case turn_phase
+        when :predraft
+          player_territories = map.territories.select(&.player?(player)).size
+          player.units = [MinDraftUnits, (player_territories / HeldTerritoriesRatio).to_i].max.to_u8
+
+          # TODO: calculate continent bonuses
+
+          next_turn_phase
         when :draft
-          if player.human?
-            player_territories = map.territories.select(&.player?(player))
+          player_territories = map.territories.select(&.player?(player))
+
+          if player.human? && player.units > 0
             checks_mouse_hover(player_territories, mouse_coords)
           end
 
-          player.draft
+          if player.units > 0
+            if territory = player.choose_territory(mouse, player_territories)
+              allocate_army(territory)
+            end
+          end
 
-          next_turn_phase if player.drafted?
+          next_turn_phase if player.units <= 0
         when :attack
         when :fortify
         end
@@ -87,7 +101,7 @@ module Risk
     def next_turn_phase
       @turn_phase_index += 1_u8
       @turn_phase_index = 0 if turn_phase_index > TurnPhases.size - 1
-      @phase = Phases[phase_index]
+      @turn_phase = TurnPhases[turn_phase_index]
 
       next_turn if turn_phase_index == 0
     end
@@ -120,25 +134,31 @@ module Risk
       end
     end
 
-    def auto_allocate_territory(territory)
-      if territory
-        if player.units > 0
-          territory.player = player
-          player.units -= 1
-          territory.units += 1
-        elsif turn_index == players.size - 1
-          next_phase
-        end
+    def allocate_territory(territory)
+      territory.player = player
+      player.units -= 1
+      territory.units += 1
+    end
 
-        next_turn
+    def auto_allocate_territory(territory)
+      if territory && player.units > 0
+        allocate_territory(territory)
+      elsif turn_index == players.size - 1
+        next_phase
       end
+
+      next_turn
+    end
+
+    def allocate_army(territory)
+      territory.player = player
+      player.units -= 1
+      territory.units += 1
     end
 
     def auto_allocate_army(territory)
       if territory && player.units > 0
-        territory.player = player
-        player.units -= 1
-        territory.units += 1
+        allocate_army(territory)
       elsif turn_index == players.size - 1
         next_phase
       end

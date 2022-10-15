@@ -3,8 +3,6 @@ module Risk
     getter name : String
     getter color : SF::Color
     property units : UInt8
-    property? drafting
-    property? drafted
 
     EmptyColor = SF::Color.new(96, 96, 96)
     MaxInitialUnits = 40_u8
@@ -15,9 +13,6 @@ module Risk
       @name = name
       @color = color
       @units = 0_u8
-
-      @drafting = false
-      @drafted = false
     end
 
     def self.empty
@@ -41,10 +36,6 @@ module Risk
       return nil unless mouse.just_pressed?(Mouse::Left)
 
       empty_territories.find(&.hover?)
-    end
-
-    def draft
-      @drafting = true
     end
   end
 end
