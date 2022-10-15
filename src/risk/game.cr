@@ -1,6 +1,6 @@
 require "./stage"
 
-module GameSFTemplate
+module Risk
   class Game < GSF::Game
     getter manager
 
@@ -15,7 +15,7 @@ module GameSFTemplate
         style = SF::Style::Default
       {% end %}
 
-      super(title: "game_sf_template", mode: mode, style: style)
+      super(title: "risk", mode: mode, style: style)
 
       @stage = Stage.new(window)
     end

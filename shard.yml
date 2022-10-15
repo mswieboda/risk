@@ -1,17 +1,17 @@
-name: game_sf_template
+name: risk
 version: 0.1.0
 
 authors:
   - Matt Swieboda <mswieboda@users.noreply.github.com>
 
 targets:
-  game_sf_template:
-    main: src/game_sf_template.cr
+  risk:
+    main: src/risk.cr
 
 dependencies:
   game_sf:
     github: mswieboda/game_sf
-    version: 0.5.0
+    version: 0.10.4
 
 crystal: 1.5.1
 
