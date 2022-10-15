@@ -1,10 +1,14 @@
 require "../map"
+require "../player"
+require "../manager"
 require "../hud"
 
 module Risk::Scene
   class Main < GSF::Scene
     getter view : GSF::View
     getter map : Map
+    getter players : Array(Player)
+    getter manager : Manager
     getter hud : HUD
 
     def initialize(window)
@@ -15,6 +19,14 @@ module Risk::Scene
       view.zoom(1 / Screen.scaling_factor)
 
       @map = Map.new
+
+      @players = [] of Player
+
+      @players << Player.new("red player", SF::Color::Red)
+      @players << Player.new("green player", SF::Color::Green)
+
+      @manager = Manager.new(players: players, map: map)
+
       @hud = HUD.new
     end
 
@@ -24,6 +36,7 @@ module Risk::Scene
         return
       end
 
+      manager.update(frame_time)
       map.update(frame_time)
       hud.update(frame_time)
     end

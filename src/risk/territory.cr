@@ -7,20 +7,19 @@ module Risk
     getter height : Int32
     getter sprite : SF::Sprite
     getter sprite_outline : SF::Sprite
-    getter color : SF::Color
+    getter player : Player
     getter text : SF::Text
-    property units : Int32
+    getter units : Int32
 
-    DefaultColor = SF::Color.new(96, 96, 96)
     TextColor = SF::Color::White
 
-    def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, color = DefaultColor, units = 0)
+    def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, player = Player.empty, units = 0)
       @name = name
       @x = x
       @y = y
       @width = width
       @height = height
-      @color = color
+      @player = player
       @units = 0
 
       filename = "assets/#{name}.png"
@@ -30,7 +29,7 @@ module Risk
 
       @sprite = SF::Sprite.new(texture)
       @sprite.position = {x, y}
-      sprite.color = color
+      sprite.color = player.color
 
       texture = SF::Texture.from_file(filename, SF::IntRect.new(width, 0, width, height))
       texture.smooth = true
@@ -47,9 +46,22 @@ module Risk
       @text.position = {tx, ty}
     end
 
-    def color=(color : SF::Color)
-      @color = color
-      @sprite.color = color
+    def player=(player : Player)
+      @player = player
+      @sprite.color = player.color
+    end
+
+    def player?(player : Player)
+      @player == player
+    end
+
+    def units=(units : Int32)
+      @units = units
+      @text.string = units.to_s
+    end
+
+    def empty?
+      @player == Player.empty && units == 0
     end
 
     def draw(window)
