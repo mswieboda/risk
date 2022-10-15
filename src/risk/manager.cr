@@ -12,7 +12,7 @@ module Risk
     getter turn_phase : Symbol
 
     Phases = [:order, :allocate, :play]
-    TurnPhases = [:place, :attack, :fortify]
+    TurnPhases = [:draft, :attack, :fortify]
 
     def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
       @players = players
@@ -38,7 +38,7 @@ module Risk
         allocate_territories
       when :play
         case turn_phase
-        when :place
+        when :draft
         when :attack
         when :fortify
         end

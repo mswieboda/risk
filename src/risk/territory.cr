@@ -5,6 +5,7 @@ module Risk
     getter y : Int32
     getter width : Int32
     getter height : Int32
+    getter image : SF::Image
     getter sprite : SF::Sprite
     getter sprite_outline : SF::Sprite
     getter player : Player
@@ -12,6 +13,8 @@ module Risk
     getter units : Int32
 
     TextColor = SF::Color::White
+    OutlineDefaultColor = SF::Color::White
+    OutlineHoverColor = SF::Color.new(255, 0, 255)
 
     def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, player = Player.empty, units = 0)
       @name = name
@@ -24,7 +27,9 @@ module Risk
 
       filename = "assets/#{name}.png"
 
-      texture = SF::Texture.from_file(filename, SF::IntRect.new(0, 0, width, height))
+      @image = SF::Image.from_file(filename)
+
+      texture = SF::Texture.from_image(image, SF::IntRect.new(0, 0, width, height))
       texture.smooth = true
 
       @sprite = SF::Sprite.new(texture)
@@ -62,6 +67,26 @@ module Risk
 
     def empty?
       @player == Player.empty && units == 0
+    end
+
+    def check_hover(mouse_coords)
+      sprite.color = hover?(mouse_coords) ? OutlineHoverColor : player.color
+    end
+
+    def inside_bounds?(mouse_coords)
+      mouse_coords.x > x && mouse_coords.x < x + width &&
+        mouse_coords.y > y && mouse_coords.y < y + height
+    end
+
+    def hover?(mouse_coords)
+      return false unless inside_bounds?(mouse_coords)
+
+      px = mouse_coords.x.round.to_i - x
+      py = mouse_coords.y.round.to_i - y
+
+      pixel = image.get_pixel(px, py)
+
+      pixel.a > 30
     end
 
     def draw(window)
