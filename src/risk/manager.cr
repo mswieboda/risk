@@ -61,38 +61,46 @@ module Risk
 
       if empty_territories.any?
         if auto_allocate_territories?
-          if territory = empty_territories.sample
-            if player.units > 0
-              territory.player = player
-              player.units -= 1
-              territory.units += 1
-            elsif turn_index == players.size - 1
-              next_phase
-            end
-
-            next_turn
-          end
+          auto_allocate_territory(empty_territories.sample)
         else
-          # wait for user interaction
+          # TODO: wait for user interaction, impl allocate manually
         end
       else
         if auto_allocate_armies?
-          player_territories = map.territories.select(&.player?(player))
-          territory = player_territories.sample if player_territories.any?
-
-          if territory && player.units > 0
-            territory.player = player
-            player.units -= 1
-            territory.units += 1
-          elsif turn_index == players.size - 1
-            next_phase
-          end
-
-          next_turn
+          auto_allocate_army
         else
-          # wait for user interaction
+          # TODO: wait for user interaction, impl allocate manually
         end
       end
+    end
+
+    def auto_allocate_territory(territory)
+      if territory
+        if player.units > 0
+          territory.player = player
+          player.units -= 1
+          territory.units += 1
+        elsif turn_index == players.size - 1
+          next_phase
+        end
+
+        next_turn
+      end
+    end
+
+    def auto_allocate_army
+      player_territories = map.territories.select(&.player?(player))
+      territory = player_territories.sample if player_territories.any?
+
+      if territory && player.units > 0
+        territory.player = player
+        player.units -= 1
+        territory.units += 1
+      elsif turn_index == players.size - 1
+        next_phase
+      end
+
+      next_turn
     end
   end
 end
