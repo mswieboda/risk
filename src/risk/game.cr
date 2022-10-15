@@ -17,6 +17,8 @@ module Risk
 
       super(title: "risk", mode: mode, style: style)
 
+      window.framerate_limit = 60
+
       @stage = Stage.new(window)
     end
   end
