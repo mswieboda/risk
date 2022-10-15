@@ -5,6 +5,7 @@ module Risk
     getter y : Int32
     getter width : Int32
     getter height : Int32
+    getter connections : Array(String)
     getter image : SF::Image
     getter sprite : SF::Sprite
     getter sprite_outline : SF::Sprite
@@ -12,20 +13,23 @@ module Risk
     getter text : SF::Text
     getter units : Int32
     getter? hover
+    getter? selected
 
     TextColor = SF::Color::White
     OutlineDefaultColor = SF::Color::White
     OutlineHoverColor = SF::Color.new(255, 0, 255)
 
-    def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, player = Player.empty, units = 0)
+    def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, connections = [] of String, player = Player.empty, units = 0)
       @name = name
       @x = x
       @y = y
       @width = width
       @height = height
+      @connections = connections
       @player = player
       @units = 0
       @hover = false
+      @selected = true
 
       filename = "assets/#{name}.png"
 
@@ -101,6 +105,14 @@ module Risk
       pixel = image.get_pixel(px, py)
 
       pixel.a > 30
+    end
+
+    def select
+      @selected = true
+    end
+
+    def connected?(territory : Territory)
+      connections.includes?(territory.name)
     end
 
     def draw(window)

@@ -11,12 +11,15 @@ module Risk
     getter turn_phase_index : UInt8
     getter turn_phase : Symbol
 
+    @territory_from : Territory?
+    @territory_to : Territory?
+
     Phases = [:order, :allocate_territories, :allocate_armies, :play]
     TurnPhases = [:predraft, :draft, :attack, :fortify]
     MinDraftUnits = 3
     HeldTerritoriesRatio = 3
 
-    def initialize(players, map, auto_allocate_territories = false, auto_allocate_armies = true)
+    def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
       @players = players
       @map = map
       @auto_allocate_territories = auto_allocate_territories
@@ -30,9 +33,14 @@ module Risk
 
       @turn_phase_index = 0_u8
       @turn_phase = TurnPhases[@turn_phase_index]
+
+      @territory_from = nil
+      @territory_to = nil
     end
 
     def update(frame_time, mouse, mouse_coords)
+      clear_mouse_hover
+
       case phase
       when :order
         determine_order
@@ -64,13 +72,41 @@ module Risk
 
           next_turn_phase if player.units <= 0
         when :attack
+          if territory_to = @territory_to
+            if territory_from = @territory_from
+              puts ">>> attack from #{territory_from.name} to #{territory_to.name}"
+            end
+          elsif territory_from = @territory_from
+            territories = map.territories.reject(&.player?(player)).select(&.connected?(territory_from))
+
+            if player.human?
+              checks_mouse_hover(territories, mouse_coords)
+            end
+
+            if territory = player.choose_territory(mouse, territories)
+              @territory_to = territory
+            end
+          else
+            player_territories = map.territories.select(&.player?(player))
+
+            if player.human?
+              checks_mouse_hover(player_territories, mouse_coords)
+            end
+
+            if territory = player.choose_territory(mouse, player_territories)
+              @territory_from = territory
+            end
+          end
         when :fortify
         end
       end
     end
 
-    def checks_mouse_hover(territories, mouse_coords)
+    def clear_mouse_hover
       map.territories.each(&.clear_hover)
+    end
+
+    def checks_mouse_hover(territories, mouse_coords)
       territories.each do |territory|
         break if territory.check_hover(mouse_coords)
       end
