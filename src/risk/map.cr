@@ -60,7 +60,10 @@ module Risk
     end
 
     def update(frame_time, mouse_coords)
-      @territories.each(&.check_hover(mouse_coords))
+      @territories.each(&.clear_hover)
+      @territories.each do |territory|
+        break if territory.check_hover(mouse_coords)
+      end
     end
 
     def draw(window)

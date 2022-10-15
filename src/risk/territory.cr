@@ -69,8 +69,18 @@ module Risk
       @player == Player.empty && units == 0
     end
 
+    def clear_hover
+      sprite.color = player.color
+    end
+
     def check_hover(mouse_coords)
-      sprite.color = hover?(mouse_coords) ? OutlineHoverColor : player.color
+      if hover?(mouse_coords)
+        sprite.color = OutlineHoverColor
+
+        true
+      else
+        false
+      end
     end
 
     def inside_bounds?(mouse_coords)
