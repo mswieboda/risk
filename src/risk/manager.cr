@@ -8,8 +8,11 @@ module Risk
     getter phase : Symbol
     getter turn_index : UInt8
     getter player : Player
+    getter turn_phase_index : UInt8
+    getter turn_phase : Symbol
 
-    Phases = [:order, :allocation, :play]
+    Phases = [:order, :allocate, :play]
+    TurnPhases = [:place, :attack, :fortify]
 
     def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
       @players = players
@@ -22,15 +25,23 @@ module Risk
 
       @turn_index = 0_u8
       @player = @players[@turn_index]
+
+      @turn_phase_index = 0_u8
+      @turn_phase = TurnPhases[@turn_phase_index]
     end
 
     def update(frame_time)
       case phase
       when :order
         determine_order
-      when :allocation
+      when :allocate
         allocate_territories
       when :play
+        case turn_phase
+        when :place
+        when :attack
+        when :fortify
+        end
       end
     end
 
@@ -42,8 +53,10 @@ module Risk
     end
 
     def next_phase
-      @phase_index += 1_u8
-      @phase = Phases[phase_index]
+      if @phase_index < Phases.size - 1
+        @phase_index += 1_u8
+        @phase = Phases[phase_index]
+      end
     end
 
     def next_turn
@@ -54,6 +67,14 @@ module Risk
       end
 
       @player = players[turn_index]
+    end
+
+    def next_turn_phase
+      @turn_phase_index += 1_u8
+      @turn_phase_index = 0 if turn_phase_index > TurnPhases.size - 1
+      @phase = Phases[phase_index]
+
+      next_turn if turn_phase_index == 0
     end
 
     def allocate_territories
