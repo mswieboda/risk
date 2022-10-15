@@ -14,7 +14,7 @@ module Risk
     Phases = [:order, :allocate, :play]
     TurnPhases = [:draft, :attack, :fortify]
 
-    def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
+    def initialize(players, map, auto_allocate_territories = false, auto_allocate_armies = true)
       @players = players
       @map = map
       @auto_allocate_territories = auto_allocate_territories
@@ -30,18 +30,32 @@ module Risk
       @turn_phase = TurnPhases[@turn_phase_index]
     end
 
-    def update(frame_time)
+    def update(frame_time, mouse, mouse_coords)
       case phase
       when :order
         determine_order
       when :allocate
-        allocate_territories
+        allocate_territories(mouse, mouse_coords)
       when :play
         case turn_phase
         when :draft
+          if player.human?
+            checks_mouse_hover(mouse_coords)
+          end
+
+          player.draft
+
+          next_turn_phase if player.drafted?
         when :attack
         when :fortify
         end
+      end
+    end
+
+    def checks_mouse_hover(mouse_coords)
+      map.territories.each(&.clear_hover)
+      map.territories.each do |territory|
+        break if territory.check_hover(mouse_coords)
       end
     end
 
@@ -77,7 +91,7 @@ module Risk
       next_turn if turn_phase_index == 0
     end
 
-    def allocate_territories
+    def allocate_territories(mouse, mouse_coords)
       empty_territories = map.territories.select(&.empty?)
 
       if empty_territories.any?
@@ -85,12 +99,20 @@ module Risk
           auto_allocate_territory(empty_territories.sample)
         else
           # TODO: wait for user interaction, impl allocate manually
+          if player.human?
+            checks_mouse_hover(mouse_coords)
+          end
+
+          if territory = player.choose_territory(mouse, empty_territories)
+            auto_allocate_territory(territory)
+          end
         end
       else
         if auto_allocate_armies?
           auto_allocate_army
         else
           # TODO: wait for user interaction, impl allocate manually
+          checks_mouse_hover(mouse_coords)
         end
       end
     end

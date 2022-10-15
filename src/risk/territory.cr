@@ -11,6 +11,7 @@ module Risk
     getter player : Player
     getter text : SF::Text
     getter units : Int32
+    getter? hover
 
     TextColor = SF::Color::White
     OutlineDefaultColor = SF::Color::White
@@ -24,6 +25,7 @@ module Risk
       @height = height
       @player = player
       @units = 0
+      @hover = false
 
       filename = "assets/#{name}.png"
 
@@ -70,11 +72,13 @@ module Risk
     end
 
     def clear_hover
+      @hover = false
       sprite.color = player.color
     end
 
     def check_hover(mouse_coords)
       if hover?(mouse_coords)
+        @hover = true
         sprite.color = OutlineHoverColor
 
         true
