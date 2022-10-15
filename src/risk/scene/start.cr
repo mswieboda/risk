@@ -1,15 +1,18 @@
 module Risk::Scene
   class Start < GSF::Scene
     getter start_scene : Symbol?
+    getter? continue
     getter items
 
     def initialize
       super(:start)
 
       @start_scene = nil
+      @continue = false
       @items = GSF::MenuItems.new(
         font: Font.default,
-        labels: ["start", "options", "exit"]
+        labels: ["new", "continue", "exit"],
+        size: (36 * Screen.scaling_factor).to_i
       )
     end
 
@@ -17,6 +20,7 @@ module Risk::Scene
       super
 
       @start_scene = nil
+      @continue = false
     end
 
     def update(frame_time, keys : Keys, mouse : Mouse, joysticks : Joysticks)
@@ -27,8 +31,10 @@ module Risk::Scene
       if keys.just_pressed?([Keys::Space, Keys::Enter]) ||
          joysticks.just_pressed?([Joysticks::A, Joysticks::B, Joysticks::X, Joysticks::Y])
         case items.focused
-        when "start"
+        when "new"
           @start_scene = :main
+        when "continue"
+          @continue = true
         when "exit"
           @exit = true
         end

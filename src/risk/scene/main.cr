@@ -10,6 +10,7 @@ module Risk::Scene
     getter players : Array(Player)
     getter manager : Manager
     getter hud : HUD
+    getter? restart
 
     def initialize(window)
       super(:main)
@@ -24,12 +25,14 @@ module Risk::Scene
 
       @players << Player.new("red player", SF::Color::Red)
       @players << Player.new("green player", SF::Color::Green)
+      @players << Player.new("blue player", SF::Color::Blue)
 
       @players.each(&.initial_units(@players.size.to_u8))
 
       @manager = Manager.new(players: players, map: map)
 
-      @hud = HUD.new
+      @hud = HUD.new(manager: manager)
+      @restart = false
     end
 
     def update(frame_time, keys : Keys, mouse : Mouse, joysticks : Joysticks)
