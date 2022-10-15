@@ -25,6 +25,8 @@ module Risk::Scene
       @players << Player.new("red player", SF::Color::Red)
       @players << Player.new("green player", SF::Color::Green)
 
+      @players.each(&.initial_units(@players.size.to_u8))
+
       @manager = Manager.new(players: players, map: map)
 
       @hud = HUD.new

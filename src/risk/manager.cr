@@ -14,7 +14,7 @@ module Risk
     Phases = [:order, :allocate, :play]
     TurnPhases = [:draft, :attack, :fortify]
 
-    def initialize(players, map, auto_allocate_territories = false, auto_allocate_armies = true)
+    def initialize(players, map, auto_allocate_territories = true, auto_allocate_armies = true)
       @players = players
       @map = map
       @auto_allocate_territories = auto_allocate_territories
@@ -40,7 +40,8 @@ module Risk
         case turn_phase
         when :draft
           if player.human?
-            checks_mouse_hover(mouse_coords)
+            player_territories = map.territories.select(&.player?(player))
+            checks_mouse_hover(player_territories, mouse_coords)
           end
 
           player.draft
@@ -52,9 +53,9 @@ module Risk
       end
     end
 
-    def checks_mouse_hover(mouse_coords)
+    def checks_mouse_hover(territories, mouse_coords)
       map.territories.each(&.clear_hover)
-      map.territories.each do |territory|
+      territories.each do |territory|
         break if territory.check_hover(mouse_coords)
       end
     end
@@ -98,21 +99,23 @@ module Risk
         if auto_allocate_territories?
           auto_allocate_territory(empty_territories.sample)
         else
-          # TODO: wait for user interaction, impl allocate manually
-          if player.human?
-            checks_mouse_hover(mouse_coords)
-          end
+          checks_mouse_hover(empty_territories, mouse_coords) if player.human?
 
           if territory = player.choose_territory(mouse, empty_territories)
             auto_allocate_territory(territory)
           end
         end
       else
+        player_territories = map.territories.select(&.player?(player))
+
         if auto_allocate_armies?
-          auto_allocate_army
+          auto_allocate_army(player_territories.sample) if player_territories.any?
         else
-          # TODO: wait for user interaction, impl allocate manually
-          checks_mouse_hover(mouse_coords)
+          checks_mouse_hover(player_territories, mouse_coords) if player.human?
+
+          if territory = player.choose_territory(mouse, player_territories)
+            auto_allocate_army(territory)
+          end
         end
       end
     end
@@ -131,10 +134,7 @@ module Risk
       end
     end
 
-    def auto_allocate_army
-      player_territories = map.territories.select(&.player?(player))
-      territory = player_territories.sample if player_territories.any?
-
+    def auto_allocate_army(territory)
       if territory && player.units > 0
         territory.player = player
         player.units -= 1

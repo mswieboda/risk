@@ -7,13 +7,14 @@ module Risk
     property? drafted
 
     EmptyColor = SF::Color.new(96, 96, 96)
+    MaxInitialUnits = 40_u8
+    InitialUnitDecreasePerPlayer = 5_u8
 
-    InitialUnits = 10_u8
 
-    def initialize(name, color, units = InitialUnits)
+    def initialize(name, color)
       @name = name
       @color = color
-      @units = InitialUnits
+      @units = 0_u8
 
       @drafting = false
       @drafted = false
@@ -26,6 +27,14 @@ module Risk
     def human?
       # TODO: override for CPUPlayer subclass
       true
+    end
+
+    def initial_units(players : UInt8)
+      if players < 10_u8
+        @units = MaxInitialUnits - ((players - 2) * InitialUnitDecreasePerPlayer)
+      else
+        @units =  0_u8
+      end
     end
 
     def choose_territory(mouse, empty_territories : Array(Territory))
