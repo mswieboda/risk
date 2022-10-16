@@ -14,7 +14,7 @@ module Risk
     @territory_from : Territory?
     @territory_to : Territory?
 
-    Phases = [:order, :allocate_territories, :allocate_armies, :play]
+    Phases = [:order, :allocate_territories, :allocate_armies, :turns]
     TurnPhases = [:predraft, :draft, :attack, :fortify]
     MinDraftUnits = 3
     HeldTerritoriesRatio = 3
@@ -48,56 +48,16 @@ module Risk
         allocate_territories(mouse, mouse_coords)
       when :allocate_armies
         allocate_armies(mouse, mouse_coords)
-      when :play
+      when :turns
         case turn_phase
         when :predraft
-          player_territories = map.territories.select(&.player?(player)).size
-          player.units = [MinDraftUnits, (player_territories / HeldTerritoriesRatio).to_i].max.to_u8
-
-          # TODO: calculate continent bonuses
-
-          next_turn_phase
+          predraft
         when :draft
-          player_territories = map.territories.select(&.player?(player))
-
-          if player.human? && player.units > 0
-            checks_mouse_hover(player_territories, mouse_coords)
-          end
-
-          if player.units > 0
-            if territory = player.choose_territory(mouse, player_territories)
-              allocate_army(territory)
-            end
-          end
-
-          next_turn_phase if player.units <= 0
+          draft(mouse, mouse_coords)
         when :attack
-          if territory_to = @territory_to
-            if territory_from = @territory_from
-              puts ">>> attack from #{territory_from.name} to #{territory_to.name}"
-            end
-          elsif territory_from = @territory_from
-            territories = map.territories.reject(&.player?(player)).select(&.connected?(territory_from))
-
-            if player.human?
-              checks_mouse_hover(territories, mouse_coords)
-            end
-
-            if territory = player.choose_territory(mouse, territories)
-              @territory_to = territory
-            end
-          else
-            player_territories = map.territories.select(&.player?(player))
-
-            if player.human?
-              checks_mouse_hover(player_territories, mouse_coords)
-            end
-
-            if territory = player.choose_territory(mouse, player_territories)
-              @territory_from = territory
-            end
-          end
+          attack(mouse, mouse_coords)
         when :fortify
+          fortify(mouse, mouse_coords)
         end
       end
     end
@@ -211,6 +171,62 @@ module Risk
       end
 
       next_turn
+    end
+
+    def predraft
+      player_territories = map.territories.select(&.player?(player)).size
+      player.units = [MinDraftUnits, (player_territories / HeldTerritoriesRatio).to_i].max.to_u8
+
+      # TODO: calculate continent bonuses
+
+      next_turn_phase
+    end
+
+    def draft(mouse, mouse_coords)
+      player_territories = map.territories.select(&.player?(player))
+
+      if player.human? && player.units > 0
+        checks_mouse_hover(player_territories, mouse_coords)
+      end
+
+      if player.units > 0
+        if territory = player.choose_territory(mouse, player_territories)
+          allocate_army(territory)
+        end
+      end
+
+      next_turn_phase if player.units <= 0
+    end
+
+    def attack(mouse, mouse_coords)
+      if territory_to = @territory_to
+        if territory_from = @territory_from
+          puts ">>> attack from #{territory_from.name} to #{territory_to.name}"
+        end
+      elsif territory_from = @territory_from
+        territories = map.territories.reject(&.player?(player)).select(&.connected?(territory_from))
+
+        if player.human?
+          checks_mouse_hover(territories, mouse_coords)
+        end
+
+        if territory = player.choose_territory(mouse, territories)
+          @territory_to = territory
+        end
+      else
+        player_territories = map.territories.select(&.player?(player))
+
+        if player.human?
+          checks_mouse_hover(player_territories, mouse_coords)
+        end
+
+        if territory = player.choose_territory(mouse, player_territories)
+          @territory_from = territory
+        end
+      end
+    end
+
+    def fortify(mouse, mouse_coords)
     end
   end
 end
