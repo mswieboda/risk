@@ -83,7 +83,7 @@ module Risk
         when :attack
           case attack_phase
           when :select
-            attack_select(mouse, mouse_coords)
+            attack_select(keys, mouse, mouse_coords)
           when :choose_dice
             attack_choose_dice(keys)
 
@@ -96,7 +96,7 @@ module Risk
             attack_move(keys, mouse, mouse_coords)
           end
         when :fortify
-          fortify(mouse, mouse_coords)
+          fortify(keys, mouse, mouse_coords)
         end
       end
     end
@@ -243,8 +243,10 @@ module Risk
       next_turn_phase if player.units <= 0
     end
 
-    def attack_select(mouse, mouse_coords)
-      if territory_to = @territory_to
+    def attack_select(keys, mouse, mouse_coords)
+      if keys.just_pressed?(Keys::Space)
+        next_turn_phase
+      elsif territory_to = @territory_to
         set_dice
         next_attack_phase
       elsif territory_from = @territory_from
@@ -400,7 +402,59 @@ module Risk
       end
     end
 
-    def fortify(mouse, mouse_coords)
+    def fortify(keys, mouse, mouse_coords)
+      if keys.just_pressed?(Keys::Space)
+        next_turn_phase
+        return
+      end
+
+      player_territories = map.territories.select(&.player?(player))
+
+      if territory_to = @territory_to
+        if territory_from = @territory_from
+          territories = [] of Territory
+
+          territories << territory_from if territory_to.units > 1
+          territories << territory_to if territory_from.units > 1
+
+          checks_mouse_hover(territories, mouse_coords) if player.human?
+
+          # TODO: check for Q/Backspace/Delete, which will undo everything, and stay in fortify phase
+          if territory = player.choose_territory(mouse, territories)
+            if territory == territory_from
+              if territory_to.units > 1
+                territory.units += 1
+                territory_to.units -= 1
+              end
+            elsif territory == territory_to
+              if territory_from.units > 1
+                territory.units += 1
+                territory_from.units -= 1
+              end
+            end
+          end
+        end
+      elsif territory_from = @territory_from
+        territories = player_territories.select(&.connected?(territory_from))
+
+        if player.human?
+          checks_mouse_hover(territories, mouse_coords)
+        end
+
+        if territory = player.choose_territory(mouse, territories)
+          @territory_to = territory
+        end
+      else
+        territories = player_territories
+          .select { |t| t.units > 1 }
+          .select { |t| player_territories.any?(&.connected?(t)) }
+
+        checks_mouse_hover(territories, mouse_coords) if player.human?
+
+        if territory = player.choose_territory(mouse, territories)
+          @territory_from = territory
+        end
+      end
     end
   end
 end
