@@ -25,8 +25,20 @@ module Risk
         text.string = "#{manager.player.name}'s turn"
       end
 
-      if manager.phase == :play
+      if manager.phase == :turns
         text.string += ", #{manager.turn_phase} phase"
+
+        if manager.turn_phase == :attack
+          text.string += ", #{manager.attack_phase}"
+
+          if manager.attack_phase == :attack
+            text.string += ", rolls: a: #{manager.attacker_values} d: #{manager.defender_values} losses: a: #{manager.attacker_losses} d: #{manager.defender_losses}"
+          end
+
+          if [:choose_dice, :attack].includes?(manager.attack_phase)
+            text.string += ", dice: a: #{manager.attacker_dice} d: #{manager.defender_dice}"
+          end
+        end
       end
     end
 

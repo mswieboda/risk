@@ -43,7 +43,7 @@ module Risk::Scene
 
       mouse_coords = mouse.view_coords(view)
 
-      manager.update(frame_time, mouse, mouse_coords)
+      manager.update(frame_time, keys, mouse, mouse_coords)
       hud.update(frame_time)
     end
 
