@@ -258,7 +258,12 @@ module Risk
           @territory_to = territory
         end
       else
-        player_territories = map.territories.select(&.player?(player)).select { |t| t.units > 1 }
+        enemy_territories = map.territories.reject(&.player?(player))
+        player_territories = map
+          .territories
+          .select(&.player?(player))
+          .select { |t| t.units > 1 }
+          .select { |t| enemy_territories.any?(&.connected?(t)) }
 
         if player.human?
           checks_mouse_hover(player_territories, mouse_coords)
