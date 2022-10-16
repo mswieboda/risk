@@ -360,8 +360,35 @@ module Risk
     end
 
     def attack_move(keys, mouse, mouse_coords)
-      # TODO: impl clicking on territories to move armies between territories
-      #       with the min in territory_to being the number of dice last rolled
+      if territory_from = @territory_from
+        if territory_to = @territory_to
+          territories = [] of Territory
+
+          territories << territory_from if territory_to.units > attacker_dice
+          territories << territory_to if territory_from.units > 1
+
+          if territories.empty?
+            attack_back_to_select
+            return
+          end
+
+          checks_mouse_hover(territories, mouse_coords) if player.human?
+
+          if territory = player.choose_territory(mouse, territories)
+            if territory == territory_from
+              if territory_to.units > attacker_dice
+                territory.units += 1
+                territory_to.units -= 1
+              end
+            elsif territory == territory_to
+              if territory_from.units > 1
+                territory.units += 1
+                territory_from.units -= 1
+              end
+            end
+          end
+        end
+      end
 
       if keys.just_pressed?(Keys::Space)
         attack_back_to_select
