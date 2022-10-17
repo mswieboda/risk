@@ -82,6 +82,25 @@ module Risk
             {name: "eastern-australia", x: 9, y: 5, width: 144, height: 192, unit_cx: 50, unit_cy: 69, connections: %w(new-guinea western-australia)},
             {name: "western-australia", x: 5, y: 6, width: 144, height: 176, unit_cx: 47, unit_cy: 87, connections: %w(new-guinea eastern-australia indonesia)}
           ]
+        },
+        {
+          name: "asia",
+          x: 37,
+          y: 1,
+          territories: [
+            {name: "middle-east", x: 0, y: 19, width: 208, height: 208, unit_cx: 105, unit_cy: 93, connections: %w(ukraine afganistan india east-africa egypt southern-europe)},
+            {name: "afganistan", x: 6, y: 12, width: 160, height: 160, unit_cx: 83, unit_cy: 83, connections: %w(ukraine ural china india middle-east)},
+            {name: "ural", x: 8, y: 2, width: 144, height: 224, unit_cx: 67, unit_cy: 131, connections: %w(siberia china afganistan ukraine)},
+            {name: "siberia", x: 11, y: 0, width: 160, height: 256, unit_cx: 83, unit_cy: 115, connections: %w(yakutsk irkutsk mongolia china ural)},
+            {name: "yakutsk", x: 18, y: 1, width: 128, height: 128, unit_cx: 57, unit_cy: 65, connections: %w(kamchatka irkutsk siberia)},
+            {name: "irkutsk", x: 17, y: 7, width: 144, height: 128, unit_cx: 63, unit_cy: 63, connections: %w(yakutsk kamchatka mongolia siberia)},
+            {name: "kamchatka", x: 22, y: 2, width: 176, height: 224, unit_cx: 75, unit_cy: 60, connections: %w(alaska japan mongolia irkutsk yakutsk)},
+            {name: "japan", x: 26, y: 11, width: 80, height: 144, unit_cx: 50, unit_cy: 89, connections: %w(kamchatka mongolia)},
+            {name: "mongolia", x: 17, y: 11, width: 160, height: 128, unit_cx: 77, unit_cy: 77, connections: %w(irkutsk kamchatka japan china siberia)},
+            {name: "china", x: 13, y: 13, width: 208, height: 208, unit_cx: 103, unit_cy: 123, connections: %w(mongolia siam india afganistan ural siberia)},
+            {name: "siam", x: 18, y: 23, width: 112, height: 128, unit_cx: 50, unit_cy: 55, connections: %w(china indonesia india)},
+            {name: "india", x: 11, y: 19, width: 144, height: 208, unit_cx: 69, unit_cy: 90, connections: %w(china siam middle-east afganistan)},
+          ]
         }
       ]
 
