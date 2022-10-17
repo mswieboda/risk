@@ -68,6 +68,17 @@ module Risk
             {name: "western-europe", x: 2, y: 12, width: 112, height: 144, unit_cx: 45, unit_cy: 90, connections: %w(great-britain northern-europe southern-europe north-africa)},
             {name: "great-britain", x: 0, y: 6, width: 112, height: 112, unit_cx: 73, unit_cy: 83, connections: %w(iceland scandinavia northern-europe western-europe)}
           ]
+        },
+        {
+          name: "australia",
+          x: 54,
+          y: 31,
+          territories: [
+            {name: "indonesia", x: 0, y: 0, width: 160, height: 128, unit_cx: 90, unit_cy: 70, connections: %w(siam new-guinea western-australia)},
+            {name: "new-guinea", x: 8, y: 0, width: 112, height: 96, unit_cx: 60, unit_cy: 45, connections: %w(eastern-australia western-australia indonesia)},
+            {name: "eastern-australia", x: 9, y: 5, width: 144, height: 192, unit_cx: 50, unit_cy: 69, connections: %w(new-guinea western-australia)},
+            {name: "western-australia", x: 5, y: 6, width: 144, height: 176, unit_cx: 47, unit_cy: 87, connections: %w(new-guinea eastern-australia indonesia)}
+          ]
         }
       ]
 
