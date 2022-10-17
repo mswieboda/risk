@@ -54,6 +54,20 @@ module Risk
             {name: "south-africa", x: 7, y: 13, width: 144, height: 176, unit_cx: 63, unit_cy: 85, connections: %w(congo east-africa madagascar)},
             {name: "madagascar", x: 15, y: 15, width: 80, height: 112, unit_cx: 37, unit_cy: 67, connections: %w(east-africa south-africa)}
           ]
+        },
+        {
+          name: "europe",
+          x: 25,
+          y: 5,
+          territories: [
+            {name: "iceland", x: 2, y: 2, width: 96, height: 80, unit_cx: 49, unit_cy: 43, connections: %w(greenland scandinavia great-britain)},
+            {name: "scandinavia", x: 7, y: 0, width: 128, height: 144, unit_cx: 47, unit_cy: 85, connections: %w(ukraine northern-europe great-britain iceland)},
+            {name: "ukraine", x: 12, y: 0, width: 192, height: 288, unit_cx: 75, unit_cy: 133, connections: %w(scandinavia ural afganistan middle-east southern-europe northern-europe)},
+            {name: "northern-europe", x: 7, y: 7, width: 112, height: 128, unit_cx: 53, unit_cy: 65, connections: %w(scandinavia ukraine southern-europe western-europe great-britain)},
+            {name: "southern-europe", x: 7, y: 12, width: 128, height: 128, unit_cx: 77, unit_cy: 55, connections: %w(northern-europe ukraine middle-east egypt north-africa western-europe)},
+            {name: "western-europe", x: 2, y: 12, width: 112, height: 144, unit_cx: 45, unit_cy: 90, connections: %w(great-britain northern-europe southern-europe north-africa)},
+            {name: "great-britain", x: 0, y: 6, width: 112, height: 112, unit_cx: 73, unit_cy: 83, connections: %w(iceland scandinavia northern-europe western-europe)}
+          ]
         }
       ]
 
