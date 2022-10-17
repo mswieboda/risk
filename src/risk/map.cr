@@ -16,7 +16,7 @@ module Risk
 
       territory_data = [
         {
-          name: "north america",
+          name: "north-america",
           x: 0,
           y: 0,
           territories: [
@@ -32,14 +32,14 @@ module Risk
           ]
         },
         {
-          name: "south america",
+          name: "south-america",
           x: 12,
           y: 25,
           territories: [
             {name: "venezula", x: 0, y: 0, width: 160, height: 80, unit_cx: 64, unit_cy: 32, connections: %w(peru brazil central-america)},
             {name: "brazil", x: 2, y: 2, width: 208, height: 192, unit_cx: 117, unit_cy: 73, connections: %w(argentina peru venezula north-africa)},
             {name: "peru", x: 0, y: 3, width: 144, height: 160, unit_cx: 75, unit_cy: 85, connections: %w(argentina brazil venezula)},
-            {name: "argentina", x: 3, y: 9, width: 96, height: 224, unit_cx: 83, unit_cy: 85, connections: %w(peru brazil)}
+            {name: "argentina", x: 3, y: 9, width: 96, height: 224, unit_cx: 39, unit_cy: 83, connections: %w(peru brazil)}
           ]
         },
         {
