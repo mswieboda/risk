@@ -404,6 +404,9 @@ module Risk
 
     def fortify(keys, mouse, mouse_coords)
       if keys.just_pressed?(Keys::Space)
+        @territory_from = nil
+        @territory_to = nil
+
         next_turn_phase
         return
       end
