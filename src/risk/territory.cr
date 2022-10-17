@@ -1,6 +1,7 @@
 module Risk
   class Territory
     getter name : String
+    getter continent : String
     getter x : Int32
     getter y : Int32
     getter width : Int32
@@ -19,8 +20,9 @@ module Risk
     OutlineDefaultColor = SF::Color::White
     OutlineHoverColor = SF::Color.new(255, 0, 255)
 
-    def initialize(name, x, y, width, height, unit_cx = 16, unit_cy = 16, connections = [] of String, player = Player.empty, units = 0)
+    def initialize(name, continent, x, y, width, height, unit_cx = 16, unit_cy = 16, connections = [] of String, player = Player.empty, units = 0)
       @name = name
+      @continent = continent
       @x = x
       @y = y
       @width = width
