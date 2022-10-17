@@ -36,17 +36,12 @@ module Risk
       filename = "assets/#{name}.png"
 
       @image = SF::Image.from_file(filename)
-
       texture = SF::Texture.from_image(image, SF::IntRect.new(0, 0, width, height))
-      texture.smooth = true
-
       @sprite = SF::Sprite.new(texture)
       @sprite.position = {x, y}
       sprite.color = player.color
 
-      texture = SF::Texture.from_file(filename, SF::IntRect.new(width, 0, width, height))
-      texture.smooth = true
-
+      texture = SF::Texture.from_image(image, SF::IntRect.new(width, 0, width, height))
       @sprite_outline = SF::Sprite.new(texture)
       @sprite_outline.position = {x, y}
 

@@ -17,9 +17,11 @@ module Risk::Scene
 
       @view = GSF::View.from_default(window).dup
 
-      view.zoom(1 / Screen.scaling_factor)
-
       @map = Map.new
+
+      view.zoom(1 / Screen.scaling_factor)
+      view.center(Map::MapWidth / 2, Map::MapHeight / 2)
+      view.zoom(0.5)
 
       @players = [] of Player
 

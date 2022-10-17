@@ -8,6 +8,9 @@ module Risk
 
     CellSize = 16
 
+    MapWidth = 1152
+    MapHeight = 768
+
     def initialize(x = 0, y = 0)
       @x = x
       @y = y
