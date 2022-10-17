@@ -1,9 +1,11 @@
+require "./continent"
 require "./territory"
 
 module Risk
   class Map
     getter x : Int32
     getter y : Int32
+    getter continents : Array(Continent)
     getter territories : Array(Territory)
 
     CellSize = 16
@@ -15,6 +17,7 @@ module Risk
       @x = x
       @y = y
 
+      @continents = [] of Continent
       @territories = [] of Territory
 
       territory_data = [
@@ -22,6 +25,7 @@ module Risk
           name: "north-america",
           x: 0,
           y: 0,
+          bonus: 5_u8,
           territories: [
             {name: "alaska", x: 0, y: 4, width: 128, height: 128, unit_cx: 59, unit_cy: 47, connections: %w(northwest-territory alberta kamchatka)},
             {name: "northwest-territory", x: 5, y: 3, width: 208, height: 96, unit_cx: 79, unit_cy: 63, connections: %w(greenland ontario alberta alaska)},
@@ -38,6 +42,7 @@ module Risk
           name: "south-america",
           x: 12,
           y: 25,
+          bonus: 2_u8,
           territories: [
             {name: "venezula", x: 0, y: 0, width: 160, height: 80, unit_cx: 64, unit_cy: 32, connections: %w(peru brazil central-america)},
             {name: "brazil", x: 2, y: 2, width: 208, height: 192, unit_cx: 117, unit_cy: 73, connections: %w(argentina peru venezula north-africa)},
@@ -49,6 +54,7 @@ module Risk
           name: "africa",
           x: 28,
           y: 24,
+          bonus: 3_u8,
           territories: [
             {name: "north-africa", x: 0, y: 0, width: 176, height: 192, unit_cx: 69, unit_cy: 99, connections: %w(brazil western-europe southern-europe egypt east-africa congo)},
             {name: "egypt", x: 6, y: 1, width: 144, height: 96, unit_cx: 69, unit_cy: 45, connections: %w(north-africa southern-europe middle-east east-africa)},
@@ -62,6 +68,7 @@ module Risk
           name: "europe",
           x: 25,
           y: 5,
+          bonus: 5_u8,
           territories: [
             {name: "iceland", x: 2, y: 2, width: 96, height: 80, unit_cx: 49, unit_cy: 43, connections: %w(greenland scandinavia great-britain)},
             {name: "scandinavia", x: 7, y: 0, width: 128, height: 144, unit_cx: 47, unit_cy: 85, connections: %w(ukraine northern-europe great-britain iceland)},
@@ -76,6 +83,7 @@ module Risk
           name: "australia",
           x: 54,
           y: 31,
+          bonus: 2_u8,
           territories: [
             {name: "indonesia", x: 0, y: 0, width: 160, height: 128, unit_cx: 90, unit_cy: 70, connections: %w(siam new-guinea western-australia)},
             {name: "new-guinea", x: 8, y: 0, width: 112, height: 96, unit_cx: 60, unit_cy: 45, connections: %w(eastern-australia western-australia indonesia)},
@@ -87,6 +95,7 @@ module Risk
           name: "asia",
           x: 37,
           y: 1,
+          bonus: 7_u8,
           territories: [
             {name: "middle-east", x: 0, y: 19, width: 208, height: 208, unit_cx: 105, unit_cy: 93, connections: %w(ukraine afganistan india east-africa egypt southern-europe)},
             {name: "afganistan", x: 6, y: 12, width: 160, height: 160, unit_cx: 83, unit_cy: 83, connections: %w(ukraine ural china india middle-east)},
@@ -105,6 +114,12 @@ module Risk
       ]
 
       territory_data.each do |continent|
+        @continents << Continent.new(
+          name: continent[:name],
+          bonus: continent[:bonus],
+          territories: continent[:territories].map { |t| t[:name] }
+        )
+
         continent[:territories].each do |territory|
           @territories << Territory.new(
             name: territory[:name],

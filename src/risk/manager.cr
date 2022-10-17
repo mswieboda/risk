@@ -219,10 +219,16 @@ module Risk
     end
 
     def predraft
-      player_territories = map.territories.select(&.player?(player)).size
-      player.units = [MinDraftUnits, (player_territories / HeldTerritoriesRatio).to_i].max.to_u8
+      player_territories = map.territories.select(&.player?(player))
+      player_territory_names = player_territories.map(&.name)
 
-      # TODO: calculate continent bonuses
+      player.units = [MinDraftUnits, (player_territories.size / HeldTerritoriesRatio).to_i].max.to_u8
+
+      map.continents.each do |continent|
+        if continent.territories.all? { |t| player_territory_names.includes?(t) }
+          player.units += continent.bonus
+        end
+      end
 
       next_turn_phase
     end

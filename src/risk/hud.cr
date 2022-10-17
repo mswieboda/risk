@@ -28,7 +28,9 @@ module Risk
       if manager.phase == :turns
         text.string += ", #{manager.turn_phase} phase"
 
-        if manager.turn_phase == :attack
+        if manager.turn_phase == :draft
+          text.string += ", units: #{manager.player.units}"
+        elsif manager.turn_phase == :attack
           text.string += ", #{manager.attack_phase}"
 
           if manager.attack_phase == :attack
