@@ -19,6 +19,7 @@ module Risk
     TextColor = SF::Color::White
     OutlineDefaultColor = SF::Color::White
     OutlineHoverColor = SF::Color.new(255, 0, 255)
+    SelectedDarkenColor = SF::Color.new(0, 0, 0, 160)
 
     def initialize(name, continent, x, y, width, height, unit_cx = 16, unit_cy = 16, connections = [] of String, player = Player.empty, units = 0)
       @name = name
@@ -31,7 +32,7 @@ module Risk
       @player = player
       @units = 0
       @hover = false
-      @selected = true
+      @selected = false
 
       filename = "assets/#{name}.png"
 
@@ -108,15 +109,32 @@ module Risk
       @selected = true
     end
 
+    def unselect
+      @selected = false
+    end
+
     def connected?(territory : Territory)
       connections.includes?(territory.name)
     end
 
     def draw(window)
       window.draw(sprite)
+
+      draw_selected(window) if selected?
+
       window.draw(sprite_outline)
 
       draw_units(window)
+    end
+
+    def draw_selected(window)
+      color = sprite.color
+
+      sprite.color = SelectedDarkenColor
+
+      window.draw(sprite)
+
+      sprite.color = color
     end
 
     def draw_units(window)

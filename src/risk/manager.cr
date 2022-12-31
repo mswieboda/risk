@@ -264,6 +264,7 @@ module Risk
 
         if territory = player.choose_territory(mouse, territories)
           @territory_to = territory
+          territory.select
         end
       else
         enemy_territories = map.territories.reject(&.player?(player))
@@ -279,6 +280,7 @@ module Risk
 
         if territory = player.choose_territory(mouse, player_territories)
           @territory_from = territory
+          territory.select
         end
       end
     end
@@ -307,8 +309,18 @@ module Risk
 
     def attack_back_to_select
       @attacked = false
+
+      if territory = @territory_from
+        territory.unselect
+      end
+
+      if territory = @territory_to
+        territory.unselect
+      end
+
       @territory_to = nil
       @territory_from = nil
+
       @attack_phase_index = 0_u8
       @attack_phase = AttackPhases[@attack_phase_index]
     end
@@ -410,6 +422,14 @@ module Risk
 
     def fortify(keys, mouse, mouse_coords)
       if keys.just_pressed?(Keys::Space)
+        if territory = @territory_from
+          territory.unselect
+        end
+
+        if territory = @territory_to
+          territory.unselect
+        end
+
         @territory_from = nil
         @territory_to = nil
 
@@ -452,6 +472,7 @@ module Risk
 
         if territory = player.choose_territory(mouse, territories)
           @territory_to = territory
+          territory.select
         end
       else
         territories = player_territories
@@ -462,6 +483,7 @@ module Risk
 
         if territory = player.choose_territory(mouse, territories)
           @territory_from = territory
+          territory.select
         end
       end
     end
