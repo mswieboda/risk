@@ -12,7 +12,9 @@ module Risk::Scene
       @items = GSF::MenuItems.new(
         font: Font.default,
         labels: ["new", "continue", "exit"],
-        size: (36 * Screen.scaling_factor).to_i
+        size: (36 * Screen.scaling_factor).to_i,
+        use_keyboard: false,
+        use_mouse: true
       )
     end
 
@@ -28,8 +30,7 @@ module Risk::Scene
 
       # TODO: refactor this to some just_pressed?(:action) etc pattern per scene
       #       with defined input config per scene
-      if keys.just_pressed?([Keys::Space, Keys::Enter]) ||
-         joysticks.just_pressed?([Joysticks::A, Joysticks::B, Joysticks::X, Joysticks::Y])
+      if mouse.just_pressed?(Mouse::Left)
         case items.focused
         when "new"
           @start_scene = :main
