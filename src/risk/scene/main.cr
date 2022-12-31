@@ -25,9 +25,10 @@ module Risk::Scene
 
       @players = [] of Player
 
-      @players << Player.new("red player", SF::Color::Red)
-      @players << Player.new("green player", SF::Color::Green)
-      @players << Player.new("blue player", SF::Color::Blue)
+      @players << Player.new("red", SF::Color::Red)
+      @players << Player.new("green", SF::Color::Green)
+      @players << Player.new("blue", SF::Color::Blue)
+      @players << Player.new("cyan", SF::Color::Cyan)
 
       @players.each(&.initial_units(@players.size.to_u8))
 

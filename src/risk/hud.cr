@@ -2,8 +2,9 @@ require "./font"
 
 module Risk
   class HUD
-    getter text
     getter manager : Manager
+    getter text
+    getter player_text
 
     Margin = 10
 
@@ -12,9 +13,13 @@ module Risk
     def initialize(manager)
       @manager = manager
 
-      @text = SF::Text.new("", Font.default, 24)
+      @text = SF::Text.new("", Font.default, (24 * Screen.scaling_factor).to_i)
       @text.fill_color = TextColor
       @text.position = {Margin, Margin}
+
+      @player_text = SF::Text.new("", Font.default, (24 * Screen.scaling_factor).to_i)
+      @player_text.fill_color = TextColor
+      @player_text.position = {Margin, Margin}
     end
 
     def update(frame_time)
@@ -45,7 +50,29 @@ module Risk
     end
 
     def draw(window : SF::RenderWindow)
+      text.position = {Margin, Margin}
+
       window.draw(text)
+
+      draw_player_info(window)
+    end
+
+    def draw_player_info(window)
+      player_text.position = {Margin, Screen.height - Margin}
+      player_text.position = {Margin, player_text.position.y - player_text.character_size - Margin}
+
+      manager.players.reverse.each.with_index do |player, index|
+        player_text.fill_color = player.color
+        player_text.position = {Margin, player_text.position.y - player_text.character_size - Margin}
+
+        if manager.player == player
+          player_text.string = "> #{manager.players.size - index}. #{player.name}"
+        else
+          player_text.string = "  #{manager.players.size - index}. #{player.name}"
+        end
+
+        window.draw(player_text)
+      end
     end
   end
 end
